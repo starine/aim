@@ -25,7 +25,7 @@ type ClientOptions struct {
 // Client is a websocket implement of the terminal
 type Client struct {
 	sync.Mutex
-	kim.Dialer
+	aim.Dialer
 	once    sync.Once
 	id      string
 	name    string
@@ -36,16 +36,16 @@ type Client struct {
 }
 
 // NewClient NewClient
-func NewClient(id, name string, opts ClientOptions) kim.Client {
+func NewClient(id, name string, opts ClientOptions) aim.Client {
 	return NewClientWithProps(id, name, make(map[string]string), opts)
 }
 
-func NewClientWithProps(id, name string, meta map[string]string, opts ClientOptions) kim.Client {
+func NewClientWithProps(id, name string, meta map[string]string, opts ClientOptions) aim.Client {
 	if opts.WriteWait == 0 {
-		opts.WriteWait = kim.DefaultWriteWait
+		opts.WriteWait = aim.DefaultWriteWait
 	}
 	if opts.ReadWait == 0 {
-		opts.ReadWait = kim.DefaultReadWait
+		opts.ReadWait = aim.DefaultReadWait
 	}
 
 	cli := &Client{
@@ -67,11 +67,11 @@ func (c *Client) Connect(addr string) error {
 		return fmt.Errorf("client has connected")
 	}
 	// step 1 拨号及握手
-	conn, err := c.Dialer.DialAndHandshake(kim.DialerContext{
+	conn, err := c.Dialer.DialAndHandshake(aim.DialerContext{
 		Id:      c.id,
 		Name:    c.name,
 		Address: addr,
-		Timeout: kim.DefaultLoginWait,
+		Timeout: aim.DefaultLoginWait,
 	})
 	if err != nil {
 		atomic.CompareAndSwapInt32(&c.state, 1, 0)
@@ -94,7 +94,7 @@ func (c *Client) Connect(addr string) error {
 }
 
 // SetDialer 设置握手逻辑
-func (c *Client) SetDialer(dialer kim.Dialer) {
+func (c *Client) SetDialer(dialer aim.Dialer) {
 	c.Dialer = dialer
 }
 
@@ -128,7 +128,7 @@ func (c *Client) Close() {
 }
 
 // Read a frame ,this function is not safely for concurrent
-func (c *Client) Read() (kim.Frame, error) {
+func (c *Client) Read() (aim.Frame, error) {
 	if c.conn == nil {
 		return nil, errors.New("connection is nil")
 	}

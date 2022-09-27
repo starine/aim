@@ -64,7 +64,7 @@ func RunServerStart(ctx context.Context, opts *ServerStartOptions, version strin
 	meta[consul.KeyHealthURL] = fmt.Sprintf("http://%s:%d/health", config.PublicAddress, config.MonitorPort)
 	meta["domain"] = config.Domain
 
-	var srv kim.Server
+	var srv aim.Server
 	service := &naming.DefaultService{
 		Id:       config.ServiceID,
 		Name:     config.ServiceName,
@@ -74,8 +74,8 @@ func RunServerStart(ctx context.Context, opts *ServerStartOptions, version strin
 		Tags:     config.Tags,
 		Meta:     meta,
 	}
-	srvOpts := []kim.ServerOption{
-		kim.WithConnectionGPool(config.ConnectionGPool), kim.WithMessageGPool(config.MessageGPool),
+	srvOpts := []aim.ServerOption{
+		aim.WithConnectionGPool(config.ConnectionGPool), aim.WithMessageGPool(config.MessageGPool),
 	}
 	if opts.protocol == "ws" {
 		srv = websocket.NewServer(config.Listen, service, srvOpts...)

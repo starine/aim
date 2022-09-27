@@ -31,7 +31,7 @@ type DefaultService struct {
 }
 
 // NewEntry NewEntry
-func NewEntry(id, name, protocol string, address string, port int) kim.ServiceRegistration {
+func NewEntry(id, name, protocol string, address string, port int) aim.ServiceRegistration {
 	return &DefaultService{
 		Id:       id,
 		Name:     name,

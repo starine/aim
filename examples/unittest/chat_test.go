@@ -33,7 +33,7 @@ func Test_Usertalk(t *testing.T) {
 
 	// resp
 	frame, _ := cli1.Read()
-	assert.Equal(t, kim.OpBinary, frame.GetOpCode())
+	assert.Equal(t, aim.OpBinary, frame.GetOpCode())
 	packet, err := pkt.MustReadLogicPkt(bytes.NewBuffer(frame.GetPayload()))
 	assert.Nil(t, err)
 	assert.Equal(t, pkt.Status_Success, packet.Header.Status)

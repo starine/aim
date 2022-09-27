@@ -14,14 +14,14 @@ type TcpDialer struct {
 	ServiceId string
 }
 
-func NewDialer(serviceId string) kim.Dialer {
+func NewDialer(serviceId string) aim.Dialer {
 	return &TcpDialer{
 		ServiceId: serviceId,
 	}
 }
 
 // DialAndHandshake(context.Context, string) (net.Conn, error)
-func (d *TcpDialer) DialAndHandshake(ctx kim.DialerContext) (net.Conn, error) {
+func (d *TcpDialer) DialAndHandshake(ctx aim.DialerContext) (net.Conn, error) {
 	// 1. 拨号建立连接
 	conn, err := net.DialTimeout("tcp", ctx.Address, ctx.Timeout)
 	if err != nil {
@@ -33,7 +33,7 @@ func (d *TcpDialer) DialAndHandshake(ctx kim.DialerContext) (net.Conn, error) {
 	logger.Infof("send req %v", req)
 	// 2. 把自己的ServiceId发送给对方
 	bts, _ := proto.Marshal(req)
-	err = tcp.WriteFrame(conn, kim.OpBinary, bts)
+	err = tcp.WriteFrame(conn, aim.OpBinary, bts)
 	if err != nil {
 		return nil, err
 	}

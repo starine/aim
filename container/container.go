@@ -43,11 +43,11 @@ const (
 type Container struct {
 	sync.RWMutex
 	Naming     naming.Naming
-	Srv        kim.Server
+	Srv        aim.Server
 	state      uint32
 	srvclients map[string]ClientMap
 	selector   Selector
-	dialer     kim.Dialer
+	dialer     aim.Dialer
 	deps       map[string]struct{}
 	monitor    sync.Once
 }
@@ -67,7 +67,7 @@ func Default() *Container {
 }
 
 // Init Init
-func Init(srv kim.Server, deps ...string) error {
+func Init(srv aim.Server, deps ...string) error {
 	if !atomic.CompareAndSwapUint32(&c.state, stateUninitialized, stateInitialized) {
 		return errors.New("has Initialized")
 	}
@@ -84,7 +84,7 @@ func Init(srv kim.Server, deps ...string) error {
 }
 
 // SetDialer set tcp dialer
-func SetDialer(dialer kim.Dialer) {
+func SetDialer(dialer aim.Dialer) {
 	c.dialer = dialer
 }
 
@@ -123,7 +123,7 @@ func Start() error {
 	}
 
 	// 1. 启动Server
-	go func(srv kim.Server) {
+	go func(srv aim.Server) {
 		err := srv.Start()
 		if err != nil {
 			log.Errorln(err)
@@ -216,7 +216,7 @@ func shutdown() error {
 	return nil
 }
 
-func lookup(serviceName string, header *pkt.Header, selector Selector) (kim.Client, error) {
+func lookup(serviceName string, header *pkt.Header, selector Selector) (aim.Client, error) {
 	clients, ok := c.srvclients[serviceName]
 	if !ok {
 		return nil, fmt.Errorf("service %s not found", serviceName)
@@ -238,14 +238,14 @@ func connectToService(serviceName string) error {
 	c.srvclients[serviceName] = clients
 	// 1. 首先Watch服务的新增
 	delay := time.Second * 10
-	err := c.Naming.Subscribe(serviceName, func(services []kim.ServiceRegistration) {
+	err := c.Naming.Subscribe(serviceName, func(services []aim.ServiceRegistration) {
 		for _, service := range services {
 			if _, ok := clients.Get(service.ServiceID()); ok {
 				continue
 			}
 			log.WithField("func", "connectToService").Infof("Watch a new service: %v", service)
 			service.GetMeta()[KeyServiceState] = StateYoung
-			go func(service kim.ServiceRegistration) {
+			go func(service aim.ServiceRegistration) {
 				time.Sleep(delay)
 				service.GetMeta()[KeyServiceState] = StateAdult
 			}(service)
@@ -276,7 +276,7 @@ func connectToService(serviceName string) error {
 	return nil
 }
 
-func buildClient(clients ClientMap, service kim.ServiceRegistration) (kim.Client, error) {
+func buildClient(clients ClientMap, service aim.ServiceRegistration) (aim.Client, error) {
 	c.Lock()
 	defer c.Unlock()
 	var (
@@ -295,9 +295,9 @@ func buildClient(clients ClientMap, service kim.ServiceRegistration) (kim.Client
 
 	// 3. 构建客户端并建立连接
 	cli := tcp.NewClientWithProps(id, name, meta, tcp.ClientOptions{
-		Heartbeat: kim.DefaultHeartbeat,
-		ReadWait:  kim.DefaultReadWait,
-		WriteWait: kim.DefaultWriteWait,
+		Heartbeat: aim.DefaultHeartbeat,
+		ReadWait:  aim.DefaultReadWait,
+		WriteWait: aim.DefaultWriteWait,
 	})
 	if c.dialer == nil {
 		return nil, fmt.Errorf("dialer is nil")
@@ -308,7 +308,7 @@ func buildClient(clients ClientMap, service kim.ServiceRegistration) (kim.Client
 		return nil, err
 	}
 	// 4. 读取消息
-	go func(cli kim.Client) {
+	go func(cli aim.Client) {
 		err := readLoop(cli)
 		if err != nil {
 			log.Debug(err)
@@ -322,7 +322,7 @@ func buildClient(clients ClientMap, service kim.ServiceRegistration) (kim.Client
 }
 
 // Receive default listener
-func readLoop(cli kim.Client) error {
+func readLoop(cli aim.Client) error {
 	log := logger.WithFields(logger.Fields{
 		"module": "container",
 		"func":   "readLoop",
@@ -334,7 +334,7 @@ func readLoop(cli kim.Client) error {
 			log.Trace(err)
 			return err
 		}
-		if frame.GetOpCode() != kim.OpBinary {
+		if frame.GetOpCode() != aim.OpBinary {
 			continue
 		}
 		buf := bytes.NewBuffer(frame.GetPayload())

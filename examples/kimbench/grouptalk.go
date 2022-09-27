@@ -1,4 +1,4 @@
-package kimbench
+package aimbench
 
 import (
 	"bytes"
@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/panjf2000/ants/v2"
-	"github.com/starine/aim"
+	aim "github.com/starine/aim"
 	"github.com/starine/aim/examples/dialer"
 	"github.com/starine/aim/report"
 	"github.com/starine/aim/wire"
@@ -53,7 +53,7 @@ func grouptalk(wsurl, appSecret string, threads, count int, memberCount int, onl
 		if err != nil {
 			return err
 		}
-		go func(cli kim.Client) {
+		go func(cli aim.Client) {
 			for {
 				_, err := cli.Read()
 				if err != nil {

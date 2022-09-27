@@ -10,8 +10,8 @@ import (
 	"github.com/starine/aim/wire/pkt"
 )
 
-func Recover() kim.HandlerFunc {
-	return func(ctx kim.Context) {
+func Recover() aim.HandlerFunc {
+	return func(ctx aim.Context) {
 		defer func() {
 			if err := recover(); err != nil {
 				var callers []string

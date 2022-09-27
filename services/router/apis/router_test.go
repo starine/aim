@@ -3,7 +3,7 @@ package apis
 import (
 	"testing"
 
-	kim "github.com/starine/aim"
+	aim "github.com/starine/aim"
 	"github.com/starine/aim/naming"
 	"github.com/starine/aim/services/router/conf"
 	"github.com/stretchr/testify/assert"
@@ -23,20 +23,20 @@ func Test_selectIdc(t *testing.T) {
 }
 
 func Test_selectGateways(t *testing.T) {
-	got := selectGateways("test11", []kim.ServiceRegistration{
+	got := selectGateways("test11", []aim.ServiceRegistration{
 		&naming.DefaultService{Id: "g1"},
 		&naming.DefaultService{Id: "g2"},
 	}, 3)
 	assert.Equal(t, len(got), 2)
 
-	got = selectGateways("test11", []kim.ServiceRegistration{
+	got = selectGateways("test11", []aim.ServiceRegistration{
 		&naming.DefaultService{Id: "g1"},
 		&naming.DefaultService{Id: "g2"},
 		&naming.DefaultService{Id: "g3"},
 	}, 3)
 	assert.Equal(t, len(got), 3)
 
-	got = selectGateways("test11", []kim.ServiceRegistration{
+	got = selectGateways("test11", []aim.ServiceRegistration{
 		&naming.DefaultService{Id: "g1"},
 		&naming.DefaultService{Id: "g2"},
 		&naming.DefaultService{Id: "g3"},

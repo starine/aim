@@ -1,4 +1,4 @@
-package kim
+package aim
 
 import (
 	"github.com/prometheus/client_golang/prometheus"
@@ -6,7 +6,7 @@ import (
 )
 
 var channelTotalGauge = promauto.NewGaugeVec(prometheus.GaugeOpts{
-	Namespace: "kim",
+	Namespace: "aim",
 	Name:      "channel_total",
 	Help:      "网关并发数",
 }, []string{"serviceId", "serviceName"})

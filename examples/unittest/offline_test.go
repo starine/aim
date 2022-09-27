@@ -91,7 +91,7 @@ func Test_offline(t *testing.T) {
 	assert.Equal(t, int32(1), contentResp.Contents[0].Type)
 }
 
-func Read(cli kim.Client, body proto.Message) error {
+func Read(cli aim.Client, body proto.Message) error {
 	frame, err := cli.Read()
 	if err != nil {
 		return err

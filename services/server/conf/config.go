@@ -47,7 +47,7 @@ func Init(file string) (*Config, error) {
 	viper.AddConfigPath("/etc/conf")
 
 	var config Config
-	err := envconfig.Process("kim", &config)
+	err := envconfig.Process("aim", &config)
 	if err != nil {
 		return nil, err
 	}
@@ -61,11 +61,11 @@ func Init(file string) (*Config, error) {
 	}
 
 	if config.ServiceID == "" {
-		localIP := kim.GetLocalIP()
+		localIP := aim.GetLocalIP()
 		config.ServiceID = fmt.Sprintf("server_%s", strings.ReplaceAll(localIP, ".", ""))
 	}
 	if config.PublicAddress == "" {
-		config.PublicAddress = kim.GetLocalIP()
+		config.PublicAddress = aim.GetLocalIP()
 	}
 	logger.Info(config)
 	return &config, nil

@@ -6,7 +6,7 @@ import (
 )
 
 var messageOutFlowBytes = promauto.NewCounterVec(prometheus.CounterOpts{
-	Namespace: "kim",
+	Namespace: "aim",
 	Name:      "message_out_flow_bytes",
 	Help:      "网关下发的消息字节数",
 }, []string{"command"})

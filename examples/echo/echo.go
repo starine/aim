@@ -73,7 +73,7 @@ func run(ctx context.Context, opts *StartOptions) error {
 			logger.Info(err)
 			break
 		}
-		if frame.GetOpCode() != kim.OpBinary {
+		if frame.GetOpCode() != aim.OpBinary {
 			continue
 		}
 		recv++

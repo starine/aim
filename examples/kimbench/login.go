@@ -1,4 +1,4 @@
-package kimbench
+package aimbench
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/panjf2000/ants/v2"
-	"github.com/starine/aim"
+	aim "github.com/starine/aim"
 	"github.com/starine/aim/examples/dialer"
 	"github.com/starine/aim/logger"
 	"github.com/starine/aim/report"
@@ -22,7 +22,7 @@ func login(wsurl, appSecret string, threads int, count int, keep time.Duration) 
 
 	var wg sync.WaitGroup
 	wg.Add(count)
-	clis := make([]kim.Client, count)
+	clis := make([]aim.Client, count)
 	for i := 0; i < count; i++ {
 		idx := i
 		_ = p.Submit(func() {

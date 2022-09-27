@@ -20,7 +20,7 @@ type ClientDialer struct {
 	AppSecret string
 }
 
-func (d *ClientDialer) DialAndHandshake(ctx kim.DialerContext) (net.Conn, error) {
+func (d *ClientDialer) DialAndHandshake(ctx aim.DialerContext) (net.Conn, error) {
 	// 1. 拨号
 	conn, _, _, err := ws.Dial(context.TODO(), ctx.Address)
 	if err != nil {
@@ -32,7 +32,7 @@ func (d *ClientDialer) DialAndHandshake(ctx kim.DialerContext) (net.Conn, error)
 	// 2. 直接使用封装的JWT包生成一个token
 	tk, err := token.Generate(d.AppSecret, &token.Token{
 		Account: ctx.Id,
-		App:     "kim",
+		App:     "aim",
 		Exp:     time.Now().AddDate(0, 0, 1).Unix(),
 	})
 	if err != nil {

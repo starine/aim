@@ -14,8 +14,8 @@ import (
 var handler ServiceHandler
 
 func init() {
-	baseDb, _ := database.InitDb("mysql", "root:123456@tcp(127.0.0.1:3306)/kim_base?charset=utf8mb4&parseTime=True&loc=Local")
-	messageDb, _ := database.InitDb("mysql", "root:123456@tcp(127.0.0.1:3306)/kim_message?charset=utf8mb4&parseTime=True&loc=Local")
+	baseDb, _ := database.InitDb("mysql", "root:123456@tcp(127.0.0.1:3306)/aim_base?charset=utf8mb4&parseTime=True&loc=Local")
+	messageDb, _ := database.InitDb("mysql", "root:123456@tcp(127.0.0.1:3306)/aim_message?charset=utf8mb4&parseTime=True&loc=Local")
 	idgen, _ := database.NewIDGenerator(1)
 	handler = ServiceHandler{
 		MessageDb: messageDb,
@@ -53,7 +53,7 @@ func Benchmark_InsertGroup10Message(b *testing.B) {
 	}
 
 	groupId, err := handler.groupCreate(&rpc.CreateGroupReq{
-		App:     "kim_t",
+		App:     "aim_t",
 		Name:    "testg",
 		Owner:   "test1",
 		Members: members,
@@ -87,7 +87,7 @@ func Benchmark_InsertGroup50Message(b *testing.B) {
 	}
 
 	groupId, err := handler.groupCreate(&rpc.CreateGroupReq{
-		App:     "kim_t",
+		App:     "aim_t",
 		Name:    "testg",
 		Owner:   "test1",
 		Members: members,

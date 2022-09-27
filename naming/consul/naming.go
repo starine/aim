@@ -19,7 +19,7 @@ const (
 
 type Watch struct {
 	Service   string
-	Callback  func([]kim.ServiceRegistration)
+	Callback  func([]aim.ServiceRegistration)
 	WaitIndex uint64
 	Quit      chan struct{}
 }
@@ -45,7 +45,7 @@ func NewNaming(consulUrl string) (naming.Naming, error) {
 	return naming, nil
 }
 
-func (n *Naming) Find(name string, tags ...string) ([]kim.ServiceRegistration, error) {
+func (n *Naming) Find(name string, tags ...string) ([]aim.ServiceRegistration, error) {
 	services, _, err := n.load(name, 0, tags...)
 	if err != nil {
 		return nil, err
@@ -54,7 +54,7 @@ func (n *Naming) Find(name string, tags ...string) ([]kim.ServiceRegistration, e
 }
 
 // refresh service registration
-func (n *Naming) load(name string, waitIndex uint64, tags ...string) ([]kim.ServiceRegistration, *api.QueryMeta, error) {
+func (n *Naming) load(name string, waitIndex uint64, tags ...string) ([]aim.ServiceRegistration, *api.QueryMeta, error) {
 	opts := &api.QueryOptions{
 		UseCache:  true,
 		MaxAge:    time.Minute, // MaxAge limits how old a cached value will be returned if UseCache is true.
@@ -65,7 +65,7 @@ func (n *Naming) load(name string, waitIndex uint64, tags ...string) ([]kim.Serv
 		return nil, meta, err
 	}
 
-	services := make([]kim.ServiceRegistration, 0, len(catalogServices))
+	services := make([]aim.ServiceRegistration, 0, len(catalogServices))
 	for _, s := range catalogServices {
 		if s.Checks.AggregatedStatus() != api.HealthPassing {
 			logger.Debugf("load service: id:%s name:%s %s:%d Status:%s", s.ServiceID, s.ServiceName, s.ServiceAddress, s.ServicePort, s.Checks.AggregatedStatus())
@@ -85,7 +85,7 @@ func (n *Naming) load(name string, waitIndex uint64, tags ...string) ([]kim.Serv
 	return services, meta, nil
 }
 
-func (n *Naming) Register(s kim.ServiceRegistration) error {
+func (n *Naming) Register(s aim.ServiceRegistration) error {
 	reg := &api.AgentServiceRegistration{
 		ID:      s.ServiceID(),
 		Name:    s.ServiceName(),
@@ -118,7 +118,7 @@ func (n *Naming) Deregister(serviceID string) error {
 	return n.cli.Agent().ServiceDeregister(serviceID)
 }
 
-func (n *Naming) Subscribe(serviceName string, callback func([]kim.ServiceRegistration)) error {
+func (n *Naming) Subscribe(serviceName string, callback func([]aim.ServiceRegistration)) error {
 	n.Lock()
 	defer n.Unlock()
 	if _, ok := n.watches[serviceName]; ok {
@@ -150,7 +150,7 @@ func (n *Naming) Unsubscribe(serviceName string) error {
 func (n *Naming) watch(wh *Watch) {
 	stopped := false
 
-	var doWatch = func(service string, callback func([]kim.ServiceRegistration)) {
+	var doWatch = func(service string, callback func([]aim.ServiceRegistration)) {
 		services, meta, err := n.load(service, wh.WaitIndex) // <-- blocking until services has changed
 		if err != nil {
 			logger.Warn(err)

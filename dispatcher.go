@@ -1,4 +1,4 @@
-package kim
+package aim
 
 import "github.com/starine/aim/wire/pkt"
 

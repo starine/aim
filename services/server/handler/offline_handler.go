@@ -19,7 +19,7 @@ func NewOfflineHandler(message service.Message) *OfflineHandler {
 	}
 }
 
-func (h *OfflineHandler) DoSyncIndex(ctx kim.Context) {
+func (h *OfflineHandler) DoSyncIndex(ctx aim.Context) {
 	var req pkt.MessageIndexReq
 	if err := ctx.ReadBody(&req); err != nil {
 		_ = ctx.RespWithError(pkt.Status_InvalidPacketBody, err)
@@ -48,7 +48,7 @@ func (h *OfflineHandler) DoSyncIndex(ctx kim.Context) {
 	})
 }
 
-func (h *OfflineHandler) DoSyncContent(ctx kim.Context) {
+func (h *OfflineHandler) DoSyncContent(ctx aim.Context) {
 	var req pkt.MessageContentReq
 	if err := ctx.ReadBody(&req); err != nil {
 		_ = ctx.RespWithError(pkt.Status_InvalidPacketBody, err)

@@ -1,4 +1,4 @@
-package kimbench
+package aimbench
 
 import (
 	"fmt"
@@ -7,15 +7,15 @@ import (
 	"time"
 
 	"github.com/panjf2000/ants/v2"
-	"github.com/starine/aim"
+	aim "github.com/starine/aim"
 	"github.com/starine/aim/examples/dialer"
 	"github.com/starine/aim/report"
 	"github.com/starine/aim/wire"
 	"github.com/starine/aim/wire/pkt"
 )
 
-func loginMulti(wsurl, appSecret string, start, count int) ([]kim.Client, error) {
-	clis := make([]kim.Client, count)
+func loginMulti(wsurl, appSecret string, start, count int) ([]aim.Client, error) {
+	clis := make([]aim.Client, count)
 	for i := 0; i < count; i++ {
 		account := fmt.Sprintf("test%d", start)
 		start++

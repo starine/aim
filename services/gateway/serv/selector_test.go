@@ -13,7 +13,7 @@ import (
 
 func TestRouteSelector_Lookup(t *testing.T) {
 
-	srvs := []kim.Service{
+	srvs := []aim.Service{
 		&naming.DefaultService{
 			Id:   "s1",
 			Meta: map[string]string{"zone": "zone_ali_01"},
@@ -44,7 +44,7 @@ func TestRouteSelector_Lookup(t *testing.T) {
 	assert.Nil(t, err)
 
 	packet := pkt.New(wire.CommandChatUserTalk, pkt.WithChannel(ksuid.New().String()))
-	packet.AddStringMeta(MetaKeyApp, "kim")
+	packet.AddStringMeta(MetaKeyApp, "aim")
 	packet.AddStringMeta(MetaKeyAccount, "test1")
 	hit := rs.Lookup(&packet.Header, srvs)
 	assert.Equal(t, "s6", hit)
