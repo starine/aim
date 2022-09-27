@@ -1,4 +1,4 @@
-package aimbench
+package kimbench
 
 import (
 	"fmt"
@@ -22,7 +22,7 @@ func login(wsurl, appSecret string, threads int, count int, keep time.Duration) 
 
 	var wg sync.WaitGroup
 	wg.Add(count)
-	clis := make([]aim.Client, count)
+	clis := make([]kim.Client, count)
 	for i := 0; i < count; i++ {
 		idx := i
 		_ = p.Submit(func() {

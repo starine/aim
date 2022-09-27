@@ -46,7 +46,7 @@ func Test_crud(t *testing.T) {
 	loc := arr[1]
 
 	arr, err = cc.GetLocations("test6")
-	assert.Equal(t, aim.ErrSessionNil, err)
+	assert.Equal(t, kim.ErrSessionNil, err)
 	assert.Equal(t, 0, len(arr))
 
 	assert.Equal(t, "ch2", loc.ChannelId)
@@ -95,7 +95,7 @@ func Benchmark_getLocation(b *testing.B) {
 			Zone:      "testtesttesttest",
 			Isp:       "moblie",
 			RemoteIP:  "127.0.0.1",
-			App:       "aim",
+			App:       "kim",
 			Tags:      []string{"tag1", "tag2"},
 		})
 	}
@@ -127,7 +127,7 @@ func Benchmark_getSession(b *testing.B) {
 			Zone:      "testtesttesttest",
 			Isp:       "moblie",
 			RemoteIP:  "127.0.0.1",
-			App:       "aim",
+			App:       "kim",
 			Tags:      []string{"tag1", "tag2"},
 		})
 	}

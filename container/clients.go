@@ -9,11 +9,11 @@ import (
 
 // Clients Clients
 type ClientMap interface {
-	Add(client aim.Client)
+	Add(client kim.Client)
 	Remove(id string)
-	Get(id string) (client aim.Client, ok bool)
-	// Find(name string) (client []aim.Client)
-	Services(kvs ...string) []aim.Service
+	Get(id string) (client kim.Client, ok bool)
+	// Find(name string) (client []kim.Client)
+	Services(kvs ...string) []kim.Service
 }
 
 type ClientsImpl struct {
@@ -28,7 +28,7 @@ func NewClients(num int) ClientMap {
 }
 
 // Add addChannel
-func (ch *ClientsImpl) Add(client aim.Client) {
+func (ch *ClientsImpl) Add(client kim.Client) {
 	if client.ServiceID() == "" {
 		logger.WithFields(logger.Fields{
 			"module": "ClientsImpl",
@@ -43,7 +43,7 @@ func (ch *ClientsImpl) Remove(id string) {
 }
 
 // Get Get
-func (ch *ClientsImpl) Get(id string) (aim.Client, bool) {
+func (ch *ClientsImpl) Get(id string) (kim.Client, bool) {
 	if id == "" {
 		logger.WithFields(logger.Fields{
 			"module": "ClientsImpl",
@@ -54,18 +54,18 @@ func (ch *ClientsImpl) Get(id string) (aim.Client, bool) {
 	if !ok {
 		return nil, false
 	}
-	return val.(aim.Client), true
+	return val.(kim.Client), true
 }
 
 // 返回服务列表，可以传一对
-func (ch *ClientsImpl) Services(kvs ...string) []aim.Service {
+func (ch *ClientsImpl) Services(kvs ...string) []kim.Service {
 	kvLen := len(kvs)
 	if kvLen != 0 && kvLen != 2 {
 		return nil
 	}
-	arr := make([]aim.Service, 0)
+	arr := make([]kim.Service, 0)
 	ch.clients.Range(func(key, val interface{}) bool {
-		ser := val.(aim.Service)
+		ser := val.(kim.Service)
 		if kvLen > 0 && ser.GetMeta()[kvs[0]] != kvs[1] {
 			return true
 		}

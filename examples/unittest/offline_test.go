@@ -19,7 +19,9 @@ func Test_offline(t *testing.T) {
 	src := fmt.Sprintf("u%d", time.Now().Unix())
 	cli, err := dialer.Login(wsurl, src)
 	assert.Nil(t, err)
-
+	if err != nil {
+		return
+	}
 	dest := fmt.Sprintf("u%d", time.Now().Unix()+1)
 	count := 10
 	for i := 0; i < count; i++ {
@@ -89,7 +91,7 @@ func Test_offline(t *testing.T) {
 	assert.Equal(t, int32(1), contentResp.Contents[0].Type)
 }
 
-func Read(cli aim.Client, body proto.Message) error {
+func Read(cli kim.Client, body proto.Message) error {
 	frame, err := cli.Read()
 	if err != nil {
 		return err

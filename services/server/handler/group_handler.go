@@ -17,7 +17,7 @@ func NewGroupHandler(groupService service.Group) *GroupHandler {
 	}
 }
 
-func (h *GroupHandler) DoCreate(ctx aim.Context) {
+func (h *GroupHandler) DoCreate(ctx kim.Context) {
 	var req pkt.GroupCreateReq
 	if err := ctx.ReadBody(&req); err != nil {
 		_ = ctx.RespWithError(pkt.Status_InvalidPacketBody, err)
@@ -36,7 +36,7 @@ func (h *GroupHandler) DoCreate(ctx aim.Context) {
 	}
 
 	locs, err := ctx.GetLocations(req.GetMembers()...)
-	if err != nil && err != aim.ErrSessionNil {
+	if err != nil && err != kim.ErrSessionNil {
 		_ = ctx.RespWithError(pkt.Status_SystemException, err)
 		return
 	}
@@ -57,7 +57,7 @@ func (h *GroupHandler) DoCreate(ctx aim.Context) {
 	})
 }
 
-func (h *GroupHandler) DoJoin(ctx aim.Context) {
+func (h *GroupHandler) DoJoin(ctx kim.Context) {
 	var req pkt.GroupJoinReq
 	if err := ctx.ReadBody(&req); err != nil {
 		_ = ctx.RespWithError(pkt.Status_InvalidPacketBody, err)
@@ -75,7 +75,7 @@ func (h *GroupHandler) DoJoin(ctx aim.Context) {
 	_ = ctx.Resp(pkt.Status_Success, nil)
 }
 
-func (h *GroupHandler) DoQuit(ctx aim.Context) {
+func (h *GroupHandler) DoQuit(ctx kim.Context) {
 	var req pkt.GroupQuitReq
 	if err := ctx.ReadBody(&req); err != nil {
 		_ = ctx.RespWithError(pkt.Status_InvalidPacketBody, err)
@@ -92,7 +92,7 @@ func (h *GroupHandler) DoQuit(ctx aim.Context) {
 	_ = ctx.Resp(pkt.Status_Success, nil)
 }
 
-func (h *GroupHandler) DoDetail(ctx aim.Context) {
+func (h *GroupHandler) DoDetail(ctx kim.Context) {
 	var req pkt.GroupGetReq
 	if err := ctx.ReadBody(&req); err != nil {
 		_ = ctx.RespWithError(pkt.Status_InvalidPacketBody, err)

@@ -1,4 +1,4 @@
-package aimbench
+package kimbench
 
 import (
 	"bytes"
@@ -53,7 +53,7 @@ func grouptalk(wsurl, appSecret string, threads, count int, memberCount int, onl
 		if err != nil {
 			return err
 		}
-		go func(cli aim.Client) {
+		go func(cli kim.Client) {
 			for {
 				_, err := cli.Read()
 				if err != nil {

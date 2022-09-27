@@ -13,7 +13,7 @@ func NewLoginHandler() *LoginHandler {
 	return &LoginHandler{}
 }
 
-func (h *LoginHandler) DoSysLogin(ctx aim.Context) {
+func (h *LoginHandler) DoSysLogin(ctx kim.Context) {
 	log := logger.WithField("func", "DoSysLogin")
 	// 1. 序列化
 	var session pkt.Session
@@ -25,7 +25,7 @@ func (h *LoginHandler) DoSysLogin(ctx aim.Context) {
 	log.Infof("do login of %v ", session.String())
 	// 2. 检查当前账号是否已经登录在其它地方
 	old, err := ctx.GetLocation(session.Account, "")
-	if err != nil && err != aim.ErrSessionNil {
+	if err != nil && err != kim.ErrSessionNil {
 		_ = ctx.RespWithError(pkt.Status_SystemException, err)
 		return
 	}
@@ -51,7 +51,7 @@ func (h *LoginHandler) DoSysLogin(ctx aim.Context) {
 	_ = ctx.Resp(pkt.Status_Success, resp)
 }
 
-func (h *LoginHandler) DoSysLogout(ctx aim.Context) {
+func (h *LoginHandler) DoSysLogout(ctx kim.Context) {
 	logger.WithField("func", "DoSysLogout").Infof("do Logout of %s %s ", ctx.Session().GetChannelId(), ctx.Session().GetAccount())
 
 	err := ctx.Delete(ctx.Session().GetAccount(), ctx.Session().GetChannelId())

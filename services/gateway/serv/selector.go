@@ -26,7 +26,7 @@ func NewRouteSelector(configPath string) (*RouteSelector, error) {
 }
 
 // Lookup a server
-func (s *RouteSelector) Lookup(header *pkt.Header, srvs []aim.Service) string {
+func (s *RouteSelector) Lookup(header *pkt.Header, srvs []kim.Service) string {
 	// 1. 从header中读取Meta信息
 	app, _ := pkt.FindMeta(header.Meta, MetaKeyApp)
 	account, _ := pkt.FindMeta(header.Meta, MetaKeyAccount)
@@ -71,8 +71,8 @@ func (s *RouteSelector) Lookup(header *pkt.Header, srvs []aim.Service) string {
 	return srv.ServiceID()
 }
 
-func filterSrvs(srvs []aim.Service, zone string) []aim.Service {
-	var res = make([]aim.Service, 0, len(srvs))
+func filterSrvs(srvs []kim.Service, zone string) []kim.Service {
+	var res = make([]kim.Service, 0, len(srvs))
 	for _, srv := range srvs {
 		if zone == srv.GetMeta()["zone"] {
 			res = append(res, srv)
@@ -81,7 +81,7 @@ func filterSrvs(srvs []aim.Service, zone string) []aim.Service {
 	return res
 }
 
-func selectSrvs(srvs []aim.Service, account string) aim.Service {
+func selectSrvs(srvs []kim.Service, account string) kim.Service {
 	slots := make([]int, 0, len(srvs)*10)
 	for i := range srvs {
 		for j := 0; j < 10; j++ {

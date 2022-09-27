@@ -31,7 +31,7 @@ type Handler struct {
 }
 
 // Accept this connection
-func (h *Handler) Accept(conn aim.Conn, timeout time.Duration) (string, aim.Meta, error) {
+func (h *Handler) Accept(conn kim.Conn, timeout time.Duration) (string, kim.Meta, error) {
 	// 1. 读取登录包
 	_ = conn.SetReadDeadline(time.Now().Add(timeout))
 	frame, err := conn.ReadFrame()
@@ -49,7 +49,7 @@ func (h *Handler) Accept(conn aim.Conn, timeout time.Duration) (string, aim.Meta
 	if req.Command != wire.CommandLoginSignIn {
 		resp := pkt.NewFrom(&req.Header)
 		resp.Status = pkt.Status_InvalidCommand
-		_ = conn.WriteFrame(aim.OpBinary, pkt.Marshal(resp))
+		_ = conn.WriteFrame(kim.OpBinary, pkt.Marshal(resp))
 		return "", nil, fmt.Errorf("must be a SignIn command")
 	}
 
@@ -69,7 +69,7 @@ func (h *Handler) Accept(conn aim.Conn, timeout time.Duration) (string, aim.Meta
 		// 5. 如果token无效，就返回SDK一个Unauthorized消息
 		resp := pkt.NewFrom(&req.Header)
 		resp.Status = pkt.Status_Unauthorized
-		_ = conn.WriteFrame(aim.OpBinary, pkt.Marshal(resp))
+		_ = conn.WriteFrame(kim.OpBinary, pkt.Marshal(resp))
 		return "", nil, err
 	}
 	// 6. 生成一个全局唯一的ChannelID
@@ -90,16 +90,17 @@ func (h *Handler) Accept(conn aim.Conn, timeout time.Duration) (string, aim.Meta
 	// 7. 把login.转发给Login服务
 	err = container.Forward(wire.SNLogin, req)
 	if err != nil {
+		log.Errorf("container.Forward :%v", err)
 		return "", nil, err
 	}
-	return id, aim.Meta{
+	return id, kim.Meta{
 		MetaKeyApp:     tk.App,
 		MetaKeyAccount: tk.Account,
 	}, nil
 }
 
 // Receive default listener
-func (h *Handler) Receive(ag aim.Agent, payload []byte) {
+func (h *Handler) Receive(ag kim.Agent, payload []byte) {
 	buf := bytes.NewBuffer(payload)
 	packet, err := pkt.Read(buf)
 	if err != nil {

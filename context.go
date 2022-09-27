@@ -1,4 +1,4 @@
-package aim
+package kim
 
 import (
 	"sync"
@@ -37,7 +37,7 @@ type HandlerFunc func(Context)
 // HandlersChain HandlersChain
 type HandlersChain []HandlerFunc
 
-// ContextImpl is the most important part of aim
+// ContextImpl is the most important part of kim
 type ContextImpl struct {
 	sync.Mutex
 	Dispatcher

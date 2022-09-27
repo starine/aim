@@ -6,7 +6,7 @@ import (
 	"github.com/starine/aim/wire/token"
 )
 
-func Login(wsurl, account string, appSecrets ...string) (aim.Client, error) {
+func Login(wsurl, account string, appSecrets ...string) (kim.Client, error) {
 	cli := websocket.NewClient(account, "unittest", websocket.ClientOptions{})
 	secret := token.DefaultSecret
 	if len(appSecrets) > 0 {

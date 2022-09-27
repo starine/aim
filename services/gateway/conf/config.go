@@ -41,7 +41,7 @@ func Init(file string) (*Config, error) {
 
 	var config Config
 
-	err := envconfig.Process("aim", &config)
+	err := envconfig.Process("kim", &config)
 	if err != nil {
 		return nil, err
 	}
@@ -55,11 +55,11 @@ func Init(file string) (*Config, error) {
 	}
 
 	if config.ServiceID == "" {
-		localIP := aim.GetLocalIP()
+		localIP := kim.GetLocalIP()
 		config.ServiceID = fmt.Sprintf("gate_%s", strings.ReplaceAll(localIP, ".", ""))
 	}
 	if config.PublicAddress == "" {
-		config.PublicAddress = aim.GetLocalIP()
+		config.PublicAddress = kim.GetLocalIP()
 	}
 	logger.Info(config)
 	return &config, nil

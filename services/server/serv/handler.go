@@ -20,12 +20,12 @@ var log = logger.WithFields(logger.Fields{
 
 // ServHandler ServHandler
 type ServHandler struct {
-	r          *aim.Router
-	cache      aim.SessionStorage
+	r          *kim.Router
+	cache      kim.SessionStorage
 	dispatcher *ServerDispatcher
 }
 
-func NewServHandler(r *aim.Router, cache aim.SessionStorage) *ServHandler {
+func NewServHandler(r *kim.Router, cache kim.SessionStorage) *ServHandler {
 	return &ServHandler{
 		r:          r,
 		dispatcher: &ServerDispatcher{},
@@ -34,7 +34,7 @@ func NewServHandler(r *aim.Router, cache aim.SessionStorage) *ServHandler {
 }
 
 // Accept this connection
-func (h *ServHandler) Accept(conn aim.Conn, timeout time.Duration) (string, aim.Meta, error) {
+func (h *ServHandler) Accept(conn kim.Conn, timeout time.Duration) (string, kim.Meta, error) {
 	_ = conn.SetReadDeadline(time.Now().Add(timeout))
 	frame, err := conn.ReadFrame()
 	if err != nil {
@@ -49,7 +49,7 @@ func (h *ServHandler) Accept(conn aim.Conn, timeout time.Duration) (string, aim.
 }
 
 // Receive default listener
-func (h *ServHandler) Receive(ag aim.Agent, payload []byte) {
+func (h *ServHandler) Receive(ag kim.Agent, payload []byte) {
 	buf := bytes.NewBuffer(payload)
 	packet, err := pkt.MustReadLogicPkt(buf)
 	if err != nil {
@@ -67,7 +67,7 @@ func (h *ServHandler) Receive(ag aim.Agent, payload []byte) {
 	} else {
 		// TODO：优化点
 		session, err = h.cache.Get(packet.ChannelId)
-		if err == aim.ErrSessionNil {
+		if err == kim.ErrSessionNil {
 			_ = RespErr(ag, packet, pkt.Status_SessionNotFound)
 			return
 		} else if err != nil {
@@ -83,7 +83,7 @@ func (h *ServHandler) Receive(ag aim.Agent, payload []byte) {
 
 }
 
-func RespErr(ag aim.Agent, p *pkt.LogicPkt, status pkt.Status) error {
+func RespErr(ag kim.Agent, p *pkt.LogicPkt, status pkt.Status) error {
 	packet := pkt.NewFrom(&p.Header)
 	packet.Status = status
 	packet.Flag = pkt.Flag_Response

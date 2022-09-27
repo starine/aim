@@ -24,7 +24,7 @@ func NewChatHandler(message service.Message, group service.Group) *ChatHandler {
 	}
 }
 
-func (h *ChatHandler) DoUserTalk(ctx aim.Context) {
+func (h *ChatHandler) DoUserTalk(ctx kim.Context) {
 	// validate
 	if ctx.Header().Dest == "" {
 		_ = ctx.RespWithError(pkt.Status_NoDestination, ErrNoDestination)
@@ -39,7 +39,7 @@ func (h *ChatHandler) DoUserTalk(ctx aim.Context) {
 	// 2. 获取接收方的位置信息
 	receiver := ctx.Header().GetDest()
 	loc, err := ctx.GetLocation(receiver, "")
-	if err != nil && err != aim.ErrSessionNil {
+	if err != nil && err != kim.ErrSessionNil {
 		_ = ctx.RespWithError(pkt.Status_SystemException, err)
 		return
 	}
@@ -82,7 +82,7 @@ func (h *ChatHandler) DoUserTalk(ctx aim.Context) {
 	})
 }
 
-func (h *ChatHandler) DoGroupTalk(ctx aim.Context) {
+func (h *ChatHandler) DoGroupTalk(ctx kim.Context) {
 	if ctx.Header().GetDest() == "" {
 		_ = ctx.RespWithError(pkt.Status_NoDestination, ErrNoDestination)
 		return
@@ -126,7 +126,7 @@ func (h *ChatHandler) DoGroupTalk(ctx aim.Context) {
 	}
 	// 4. 批量寻址（群成员）
 	locs, err := ctx.GetLocations(members...)
-	if err != nil && err != aim.ErrSessionNil {
+	if err != nil && err != kim.ErrSessionNil {
 		_ = ctx.RespWithError(pkt.Status_SystemException, err)
 		return
 	}
@@ -152,7 +152,7 @@ func (h *ChatHandler) DoGroupTalk(ctx aim.Context) {
 	})
 }
 
-func (h *ChatHandler) DoTalkAck(ctx aim.Context) {
+func (h *ChatHandler) DoTalkAck(ctx kim.Context) {
 	var req pkt.MessageAckReq
 	if err := ctx.ReadBody(&req); err != nil {
 		_ = ctx.RespWithError(pkt.Status_InvalidPacketBody, err)

@@ -29,7 +29,7 @@ type LookUpResp struct {
 }
 
 func (r *RouterApi) Lookup(c iris.Context) {
-	ip := aim.RealIP(c.Request())
+	ip := kim.RealIP(c.Request())
 	token := c.Params().Get("token")
 
 	// step 1
@@ -91,7 +91,7 @@ func selectIdc(token string, region *conf.Region) *conf.IDC {
 	return &region.Idcs[i]
 }
 
-func selectGateways(token string, gateways []aim.ServiceRegistration, num int) []aim.ServiceRegistration {
+func selectGateways(token string, gateways []kim.ServiceRegistration, num int) []kim.ServiceRegistration {
 	if len(gateways) <= num {
 		return gateways
 	}
@@ -103,7 +103,7 @@ func selectGateways(token string, gateways []aim.ServiceRegistration, num int) [
 	}
 	slot := hashcode(token) % len(slots)
 	i := slots[slot]
-	res := make([]aim.ServiceRegistration, 0, num)
+	res := make([]kim.ServiceRegistration, 0, num)
 	for len(res) < num {
 		res = append(res, gateways[i])
 		i++

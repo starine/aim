@@ -23,13 +23,13 @@ func Test_Parallel(t *testing.T) {
 	var wg sync.WaitGroup
 	wg.Add(count)
 
-	clis := make([]aim.Client, count)
+	clis := make([]kim.Client, count)
 	t0 := time.Now()
 	for i := 0; i < count; i++ {
 		idx := i
 		_ = gpool.Submit(func() {
 			cli := websocket.NewClient(fmt.Sprintf("test_%v", idx), "client", websocket.ClientOptions{
-				Heartbeat: aim.DefaultHeartbeat,
+				Heartbeat: kim.DefaultHeartbeat,
 			})
 			// set dialer
 			cli.SetDialer(&mock.WebsocketDialer{})
@@ -57,7 +57,7 @@ func Test_Parallel(t *testing.T) {
 func Test_Message(t *testing.T) {
 	const count = 1000 * 100
 	cli := websocket.NewClient(fmt.Sprintf("test_%v", 1), "client", websocket.ClientOptions{
-		Heartbeat: aim.DefaultHeartbeat,
+		Heartbeat: kim.DefaultHeartbeat,
 	})
 	// set dialer
 	cli.SetDialer(&mock.WebsocketDialer{})
@@ -81,7 +81,7 @@ func Test_Message(t *testing.T) {
 			logger.Info("time", time.Now().UnixNano(), err)
 			break
 		}
-		if frame.GetOpCode() != aim.OpBinary {
+		if frame.GetOpCode() != kim.OpBinary {
 			continue
 		}
 		recv++

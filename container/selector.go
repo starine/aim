@@ -16,5 +16,5 @@ func HashCode(key string) int {
 
 // Selector is used to select a Service
 type Selector interface {
-	Lookup(*pkt.Header, []aim.Service) string
+	Lookup(*pkt.Header, []kim.Service) string
 }

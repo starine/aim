@@ -19,7 +19,7 @@ type ClientDemo struct {
 }
 
 func (c *ClientDemo) Start(userID, protocol, addr string) {
-	var cli aim.Client
+	var cli kim.Client
 
 	// step1: 初始化客户端
 	if protocol == "ws" {
@@ -58,7 +58,7 @@ func (c *ClientDemo) Start(userID, protocol, addr string) {
 			logger.Info(err)
 			break
 		}
-		if frame.GetOpCode() != aim.OpBinary {
+		if frame.GetOpCode() != kim.OpBinary {
 			continue
 		}
 		recv++
@@ -76,7 +76,7 @@ type WebsocketDialer struct {
 }
 
 // DialAndHandshake DialAndHandshake
-func (d *WebsocketDialer) DialAndHandshake(ctx aim.DialerContext) (net.Conn, error) {
+func (d *WebsocketDialer) DialAndHandshake(ctx kim.DialerContext) (net.Conn, error) {
 	logger.Info("start ws dial: ", ctx.Address)
 	// 1 调用ws.Dial拨号
 	ctxWithTimeout, cancel := context.WithTimeout(context.TODO(), ctx.Timeout)
@@ -100,7 +100,7 @@ type TCPDialer struct {
 }
 
 // DialAndHandshake DialAndHandshake
-func (d *TCPDialer) DialAndHandshake(ctx aim.DialerContext) (net.Conn, error) {
+func (d *TCPDialer) DialAndHandshake(ctx kim.DialerContext) (net.Conn, error) {
 	logger.Info("start tcp dial: ", ctx.Address)
 	// 1 调用net.Dial拨号
 	conn, err := net.DialTimeout("tcp", ctx.Address, ctx.Timeout)
@@ -108,7 +108,7 @@ func (d *TCPDialer) DialAndHandshake(ctx aim.DialerContext) (net.Conn, error) {
 		return nil, err
 	}
 	// 2. 发送用户认证信息，示例就是userid
-	err = tcp.WriteFrame(conn, aim.OpBinary, []byte(ctx.Id))
+	err = tcp.WriteFrame(conn, kim.OpBinary, []byte(ctx.Id))
 	if err != nil {
 		return nil, err
 	}

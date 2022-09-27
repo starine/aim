@@ -21,27 +21,27 @@ type ClientOptions struct {
 // Client is a websocket implement of the terminal
 type Client struct {
 	sync.Mutex
-	aim.Dialer
+	kim.Dialer
 	once    sync.Once
 	id      string
 	name    string
-	conn    aim.Conn
+	conn    kim.Conn
 	state   int32
 	options ClientOptions
 	Meta    map[string]string
 }
 
 // NewClient NewClient
-func NewClient(id, name string, opts ClientOptions) aim.Client {
+func NewClient(id, name string, opts ClientOptions) kim.Client {
 	return NewClientWithProps(id, name, make(map[string]string), opts)
 }
 
-func NewClientWithProps(id, name string, meta map[string]string, opts ClientOptions) aim.Client {
+func NewClientWithProps(id, name string, meta map[string]string, opts ClientOptions) kim.Client {
 	if opts.WriteWait == 0 {
-		opts.WriteWait = aim.DefaultWriteWait
+		opts.WriteWait = kim.DefaultWriteWait
 	}
 	if opts.ReadWait == 0 {
-		opts.ReadWait = aim.DefaultReadWait
+		opts.ReadWait = kim.DefaultReadWait
 	}
 
 	cli := &Client{
@@ -60,11 +60,11 @@ func (c *Client) Connect(addr string) error {
 		return fmt.Errorf("client has connected")
 	}
 
-	rawconn, err := c.Dialer.DialAndHandshake(aim.DialerContext{
+	rawconn, err := c.Dialer.DialAndHandshake(kim.DialerContext{
 		Id:      c.id,
 		Name:    c.name,
 		Address: addr,
-		Timeout: aim.DefaultLoginWait,
+		Timeout: kim.DefaultLoginWait,
 	})
 	if err != nil {
 		atomic.CompareAndSwapInt32(&c.state, 1, 0)
@@ -87,7 +87,7 @@ func (c *Client) Connect(addr string) error {
 }
 
 // SetDialer 设置握手逻辑
-func (c *Client) SetDialer(dialer aim.Dialer) {
+func (c *Client) SetDialer(dialer kim.Dialer) {
 	c.Dialer = dialer
 }
 
@@ -98,11 +98,7 @@ func (c *Client) Send(payload []byte) error {
 	}
 	c.Lock()
 	defer c.Unlock()
-	err := c.conn.SetWriteDeadline(time.Now().Add(c.options.WriteWait))
-	if err != nil {
-		return err
-	}
-	err = c.conn.WriteFrame(aim.OpBinary, payload)
+	err := c.conn.WriteFrame(kim.OpBinary, payload)
 	if err != nil {
 		return err
 	}
@@ -116,7 +112,7 @@ func (c *Client) Close() {
 			return
 		}
 		// graceful close connection
-		_ = c.conn.WriteFrame(aim.OpClose, nil)
+		_ = c.conn.WriteFrame(kim.OpClose, nil)
 		c.conn.Flush()
 
 		c.conn.Close()
@@ -124,7 +120,7 @@ func (c *Client) Close() {
 	})
 }
 
-func (c *Client) Read() (aim.Frame, error) {
+func (c *Client) Read() (kim.Frame, error) {
 	if c.conn == nil {
 		return nil, errors.New("connection is nil")
 	}
@@ -135,7 +131,7 @@ func (c *Client) Read() (aim.Frame, error) {
 	if err != nil {
 		return nil, err
 	}
-	if frame.GetOpCode() == aim.OpClose {
+	if frame.GetOpCode() == kim.OpClose {
 		return nil, errors.New("remote side close the channel")
 	}
 	return frame, nil
@@ -155,11 +151,7 @@ func (c *Client) heartbealoop() error {
 func (c *Client) ping() error {
 	logger.WithField("module", "tcp.client").Tracef("%s send ping to server", c.id)
 
-	err := c.conn.SetWriteDeadline(time.Now().Add(c.options.WriteWait))
-	if err != nil {
-		return err
-	}
-	err = c.conn.WriteFrame(aim.OpPing, nil)
+	err := c.conn.WriteFrame(kim.OpPing, nil)
 	if err != nil {
 		return err
 	}

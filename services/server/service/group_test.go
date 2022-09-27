@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-const app = "aim_t"
+const app = "kim_t"
 
 var groupService = NewGroupService("http://localhost:8080")
 

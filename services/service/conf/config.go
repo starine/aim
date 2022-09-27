@@ -12,10 +12,10 @@ import (
 	"github.com/go-redis/redis/v7"
 	"github.com/kataras/iris/v12/middleware/accesslog"
 	"github.com/kelseyhightower/envconfig"
-	"github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
 	"github.com/starine/aim"
 	"github.com/starine/aim/logger"
+	"github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
 )
 
 // Config Config
@@ -53,12 +53,12 @@ func Init(file string) (*Config, error) {
 			return nil, err
 		}
 	}
-	err := envconfig.Process("aim", &config)
+	err := envconfig.Process("kim", &config)
 	if err != nil {
 		return nil, err
 	}
 	if config.ServiceID == "" {
-		localIP := aim.GetLocalIP()
+		localIP := kim.GetLocalIP()
 		config.ServiceID = fmt.Sprintf("royal_%s", strings.ReplaceAll(localIP, ".", ""))
 		arr := strings.Split(localIP, ".")
 		if len(arr) == 4 {
@@ -67,7 +67,7 @@ func Init(file string) (*Config, error) {
 		}
 	}
 	if config.PublicAddress == "" {
-		config.PublicAddress = aim.GetLocalIP()
+		config.PublicAddress = kim.GetLocalIP()
 	}
 	logger.Info(config)
 	return &config, nil

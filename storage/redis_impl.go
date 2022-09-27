@@ -18,15 +18,15 @@ type RedisStorage struct {
 	cli *redis.Client
 }
 
-func NewRedisStorage(cli *redis.Client) aim.SessionStorage {
+func NewRedisStorage(cli *redis.Client) kim.SessionStorage {
 	return &RedisStorage{
 		cli: cli,
 	}
 }
 
 func (r *RedisStorage) Add(session *pkt.Session) error {
-	// save aim.Location
-	loc := aim.Location{
+	// save kim.Location
+	loc := kim.Location{
 		ChannelId: session.ChannelId,
 		GateId:    session.GateId,
 	}
@@ -67,7 +67,7 @@ func (r *RedisStorage) Get(channelId string) (*pkt.Session, error) {
 	bts, err := r.cli.Get(snKey).Bytes()
 	if err != nil {
 		if err == redis.Nil {
-			return nil, aim.ErrSessionNil
+			return nil, kim.ErrSessionNil
 		}
 		return nil, err
 	}
@@ -76,37 +76,37 @@ func (r *RedisStorage) Get(channelId string) (*pkt.Session, error) {
 	return &session, nil
 }
 
-func (r *RedisStorage) GetLocations(accounts ...string) ([]*aim.Location, error) {
+func (r *RedisStorage) GetLocations(accounts ...string) ([]*kim.Location, error) {
 	keys := KeyLocations(accounts...)
 	list, err := r.cli.MGet(keys...).Result()
 	if err != nil {
 		return nil, err
 	}
-	var result = make([]*aim.Location, 0)
+	var result = make([]*kim.Location, 0)
 	for _, l := range list {
 		if l == nil {
 			continue
 		}
-		var loc aim.Location
+		var loc kim.Location
 		_ = loc.Unmarshal([]byte(l.(string)))
 		result = append(result, &loc)
 	}
 	if len(result) == 0 {
-		return nil, aim.ErrSessionNil
+		return nil, kim.ErrSessionNil
 	}
 	return result, nil
 }
 
-func (r *RedisStorage) GetLocation(account string, device string) (*aim.Location, error) {
+func (r *RedisStorage) GetLocation(account string, device string) (*kim.Location, error) {
 	key := KeyLocation(account, device)
 	bts, err := r.cli.Get(key).Bytes()
 	if err != nil {
 		if err == redis.Nil {
-			return nil, aim.ErrSessionNil
+			return nil, kim.ErrSessionNil
 		}
 		return nil, err
 	}
-	var loc aim.Location
+	var loc kim.Location
 	_ = loc.Unmarshal(bts)
 	return &loc, nil
 }

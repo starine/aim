@@ -1,4 +1,4 @@
-package aimbench
+package kimbench
 
 import (
 	"fmt"
@@ -14,8 +14,8 @@ import (
 	"github.com/starine/aim/wire/pkt"
 )
 
-func loginMulti(wsurl, appSecret string, start, count int) ([]aim.Client, error) {
-	clis := make([]aim.Client, count)
+func loginMulti(wsurl, appSecret string, start, count int) ([]kim.Client, error) {
+	clis := make([]kim.Client, count)
 	for i := 0; i < count; i++ {
 		account := fmt.Sprintf("test%d", start)
 		start++

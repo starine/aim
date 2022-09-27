@@ -20,7 +20,7 @@ func (s *ServerDemo) Start(id, protocol, addr string) {
 		_ = http.ListenAndServe("0.0.0.0:6060", nil)
 	}()
 
-	var srv aim.Server
+	var srv kim.Server
 	service := &naming.DefaultService{
 		Id:       id,
 		Protocol: protocol,
@@ -49,7 +49,7 @@ type ServerHandler struct {
 }
 
 // Accept this connection
-func (h *ServerHandler) Accept(conn aim.Conn, timeout time.Duration) (string, aim.Meta, error) {
+func (h *ServerHandler) Accept(conn kim.Conn, timeout time.Duration) (string, kim.Meta, error) {
 	// 1. 读取：客户端发送的鉴权数据包
 	frame, err := conn.ReadFrame()
 	if err != nil {
@@ -66,7 +66,7 @@ func (h *ServerHandler) Accept(conn aim.Conn, timeout time.Duration) (string, ai
 }
 
 // Receive default listener
-func (h *ServerHandler) Receive(ag aim.Agent, payload []byte) {
+func (h *ServerHandler) Receive(ag kim.Agent, payload []byte) {
 	logger.Infof("srv received %s", string(payload))
 	_ = ag.Push([]byte("ok"))
 }

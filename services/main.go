@@ -18,7 +18,7 @@ func main() {
 	flag.Parse()
 
 	root := &cobra.Command{
-		Use:     "aim",
+		Use:     "kim",
 		Version: version,
 		Short:   "King IM Cloud",
 	}

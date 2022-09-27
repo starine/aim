@@ -10,7 +10,7 @@ import (
 func TestParseJwtToken(t *testing.T) {
 	tk1 := &Token{
 		Account: "test1",
-		App:     "aim",
+		App:     "kim",
 		Exp:     time.Now().Add(time.Hour * 24 * 7).Unix(),
 	}
 	secret := "123456"

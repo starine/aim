@@ -4,8 +4,8 @@ import (
 	"time"
 )
 
-// create database aim_base default character set utf8mb4 collate utf8mb4_unicode_ci;
-// create database aim_message default character set utf8mb4 collate utf8mb4_unicode_ci;
+// create database kim_base default character set utf8mb4 collate utf8mb4_unicode_ci;
+// create database kim_message default character set utf8mb4 collate utf8mb4_unicode_ci;
 
 type Model struct {
 	ID        int64 `gorm:"primarykey"`

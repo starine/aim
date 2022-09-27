@@ -69,7 +69,7 @@ func RunServerStart(ctx context.Context, opts *ServerStartOptions, version strin
 		messageService = service.NewMessageServiceWithSRV("http", srvRecord)
 	}
 
-	r := aim.NewRouter()
+	r := kim.NewRouter()
 	r.Use(middleware.Recover())
 
 	// login
@@ -113,12 +113,12 @@ func RunServerStart(ctx context.Context, opts *ServerStartOptions, version strin
 		Tags:     config.Tags,
 		Meta:     meta,
 	}
-	srvOpts := []aim.ServerOption{
-		aim.WithConnectionGPool(config.ConnectionGPool), aim.WithMessageGPool(config.MessageGPool),
+	srvOpts := []kim.ServerOption{
+		kim.WithConnectionGPool(config.ConnectionGPool), kim.WithMessageGPool(config.MessageGPool),
 	}
 	srv := tcp.NewServer(config.Listen, service, srvOpts...)
 
-	srv.SetReadWait(aim.DefaultReadWait)
+	srv.SetReadWait(kim.DefaultReadWait)
 	srv.SetAcceptor(servhandler)
 	srv.SetMessageListener(servhandler)
 	srv.SetStateListener(servhandler)
